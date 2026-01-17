@@ -152,7 +152,7 @@ const HeroSection = () => {
               data-testid="hero-slogan"
             >
               Pain is common, but pain is{' '}
-              <span className="font-bold text-[#0A1F44]">NOT</span>
+              <span className="font-bold" style={{ color: 'red' }}>NOT</span>
               {' '}normal.
             </motion.p>
           </div>
