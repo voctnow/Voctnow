@@ -1,7 +1,7 @@
 # VOCT Healthcare - Product Requirements Document
 
 ## Original Problem Statement
-Build website from GitHub repo https://github.com/voctnow/Voctnow.git with footer customizations (Instagram, email).
+Build website from GitHub repo https://github.com/voctnow/Voctnow.git with customizations.
 
 ## User Personas
 - **Patients**: People seeking home physiotherapy services
@@ -20,23 +20,35 @@ Build website from GitHub repo https://github.com/voctnow/Voctnow.git with foote
 ### Initial Setup (Jan 17, 2026)
 - Cloned and deployed VOCT healthcare website from GitHub
 - Set up FastAPI backend + React frontend + MongoDB
-- Footer: Instagram link (https://www.instagram.com/voctnow), Email (support@voct.in)
 
 ### UI/UX Updates (Jan 17, 2026)
-1. **Hero Section**: Added physiotherapy illustration image with text on left side
-2. **Header**: 3D shadow strip effect with blur, gradient background
+1. **Hero Section**:
+   - Added physiotherapy illustration image (cleaned background for seamless blend)
+   - VOCT logo with 3D reveal animation
+   - "HEALTHCARE COMES HOME" subtitle centered under VOCT
+   - "Pain is common, but pain is NOT normal." slogan - centered, single line, with reveal animation
+
+2. **Header**: 
+   - 3D shadow strip effect with blur and gradient
+   - Navigation: Home, Services, Join Us, About Us, Login
+
 3. **Footer Restructure**:
-   - Changed tagline to "Healthcare Comes Home"
-   - Removed "Clinical Team" link
-   - Added Contact Us section with call timings (8 AM - 8 PM, All Days)
-   - Stay Connected with Instagram link
-4. **Assessment Panel**: Complete 3D redesign with:
-   - Animated slide-in panel with perspective effect
+   - VOCT with "Healthcare Comes Home" tagline
+   - About Us section (Our Story, Mission & Vision)
+   - Services section (Physiotherapy, Neuro Rehab, Elderly Care)
+   - Contact Us (8 AM - 8 PM All Days, support@voct.in)
+   - Stay Connected with Instagram link (https://www.instagram.com/voctnow)
+   - Removed Clinical Team link
+
+4. **Assessment Panel**: 
+   - 3D slide-in animation with perspective effect
    - Blurred overlay background
    - Animated progress bar with shimmer effect
    - Step indicator dots
-   - 3D card hover animations for selections
-5. **Services Section**: Changed subtitle to "Expert care. Zero travel"
+   - 3D card hover animations
+
+5. **Services Section**: 
+   - Subtitle: "Expert care. Zero travel"
 
 ## Technical Stack
 - **Frontend**: React 19, Tailwind CSS, Framer Motion, Swiper
