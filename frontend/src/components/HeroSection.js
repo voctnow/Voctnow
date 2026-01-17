@@ -139,22 +139,14 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            {/* Slogan - 3D Reveal */}
-            <motion.div
-              variants={sloganVariants}
-              initial="hidden"
-              animate="visible"
+            {/* Slogan */}
+            <p
               className="text-xl md:text-2xl font-semibold text-gray-900 mt-8"
-              style={{ 
-                fontFamily: 'Poppins, sans-serif',
-                transformStyle: 'preserve-3d',
-              }}
+              style={{ fontFamily: 'Poppins, sans-serif' }}
               data-testid="hero-slogan"
             >
-              <span>Pain is common, but pain is </span>
-              <span className="font-bold italic" style={{ color: '#0A1F44' }}>NOT</span>
-              <span> normal.</span>
-            </motion.div>
+              Pain is common, but pain is <span className="font-bold italic text-[#0A1F44]">NOT</span> normal.
+            </p>
           </div>
 
           {/* Right Image */}
