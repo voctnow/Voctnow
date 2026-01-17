@@ -156,12 +156,12 @@ const HeroSection = () => {
             initial="hidden"
             animate="visible"
             className="flex justify-center lg:justify-end"
+            style={{ background: '#FAF5F0' }}
           >
             <img
               src="https://customer-assets.emergentagent.com/job_github-website-2/artifacts/91zcp83t_IMG_8878%203.PNG"
               alt="Home physiotherapy"
-              className="w-full max-w-2xl mix-blend-multiply"
-              style={{ background: 'transparent' }}
+              className="w-full max-w-2xl"
               data-testid="hero-image"
             />
           </motion.div>
