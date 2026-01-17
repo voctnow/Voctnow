@@ -151,7 +151,17 @@ const HeroSection = () => {
               }}
               data-testid="hero-slogan"
             >
-              Pain is common, but pain is <strong className="text-[#0A1F44]"><em>NOT</em></strong> normal.
+              Pain is common, but pain is{' '}
+              <span 
+                className="font-black"
+                style={{ 
+                  color: '#0A1F44',
+                  fontStyle: 'italic',
+                }}
+              >
+                NOT
+              </span>
+              {' '}normal.
             </motion.p>
           </div>
 
