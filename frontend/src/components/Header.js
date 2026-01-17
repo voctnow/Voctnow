@@ -37,56 +37,86 @@ const Header = () => {
   return (
     <>
       <header 
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled 
-            ? 'bg-white/90 backdrop-blur-md shadow-sm py-4' 
-            : 'bg-transparent py-6'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300`}
+        style={{
+          background: scrolled 
+            ? 'linear-gradient(to bottom, rgba(255,255,255,0.98), rgba(255,255,255,0.95))'
+            : 'linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.85))',
+          boxShadow: '0 4px 20px rgba(10, 31, 68, 0.08), 0 1px 3px rgba(10, 31, 68, 0.06)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(10, 31, 68, 0.05)',
+        }}
       >
-        <div className="max-w-7xl mx-auto px-6">
+        {/* 3D Shadow Strip Effect */}
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-[3px]"
+          style={{
+            background: 'linear-gradient(90deg, transparent 0%, rgba(10, 31, 68, 0.1) 20%, rgba(10, 31, 68, 0.15) 50%, rgba(10, 31, 68, 0.1) 80%, transparent 100%)',
+            boxShadow: '0 2px 8px rgba(10, 31, 68, 0.1)',
+          }}
+        />
+        
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center">
               <span 
                 className="font-bold text-2xl text-[#0A1F44]"
-                style={{ fontFamily: 'Poppins, sans-serif' }}
+                style={{ 
+                  fontFamily: 'Poppins, sans-serif',
+                  textShadow: '0 2px 4px rgba(10, 31, 68, 0.1)',
+                }}
                 data-testid="logo"
               >
                 VOCT
               </span>
             </Link>
 
-            {/* Desktop Navigation - Left side: Services | Join Us | About Us */}
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
               <button
+                onClick={() => handleNavClick('/')}
+                className="font-medium text-gray-600 hover:text-[#0A1F44] transition-all duration-200 text-sm relative group"
+                style={{ fontFamily: 'Open Sans, sans-serif' }}
+                data-testid="nav-home"
+              >
+                Home
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#0A1F44] transition-all duration-200 group-hover:w-full" />
+              </button>
+              
+              <button
                 onClick={() => handleNavClick('/#services')}
-                className="font-medium text-gray-600 hover:text-[#0A1F44] transition-colors text-sm"
+                className="font-medium text-gray-600 hover:text-[#0A1F44] transition-all duration-200 text-sm relative group"
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
                 data-testid="nav-services"
               >
                 Services
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#0A1F44] transition-all duration-200 group-hover:w-full" />
               </button>
               
               <button
                 onClick={() => navigate('/join-us')}
-                className="font-medium text-gray-600 hover:text-[#0A1F44] transition-colors text-sm"
+                className="font-medium text-gray-600 hover:text-[#0A1F44] transition-all duration-200 text-sm relative group"
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
                 data-testid="nav-join-us"
               >
                 Join Us
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#0A1F44] transition-all duration-200 group-hover:w-full" />
               </button>
 
               <button
                 onClick={() => navigate('/about')}
-                className="font-medium text-gray-600 hover:text-[#0A1F44] transition-colors text-sm"
+                className="font-medium text-gray-600 hover:text-[#0A1F44] transition-all duration-200 text-sm relative group"
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
                 data-testid="nav-about-us"
               >
                 About Us
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#0A1F44] transition-all duration-200 group-hover:w-full" />
               </button>
             </nav>
 
-            {/* Auth Button - Right side: Login */}
+            {/* Auth Button */}
             <div className="hidden md:flex items-center gap-4">
               {user ? (
                 <div className="relative">
@@ -154,8 +184,11 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => setShowAuthModal(true)}
-                  className="px-5 py-2.5 bg-[#0A1F44] text-white rounded-lg font-medium text-sm hover:bg-[#1a3a5c] transition-colors"
-                  style={{ fontFamily: 'Poppins, sans-serif' }}
+                  className="px-6 py-2.5 bg-[#3B82F6] text-white rounded-full font-medium text-sm hover:bg-[#2563EB] transition-all duration-200"
+                  style={{ 
+                    fontFamily: 'Poppins, sans-serif',
+                    boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)',
+                  }}
                   data-testid="login-btn"
                 >
                   Login
@@ -185,6 +218,12 @@ const Header = () => {
               className="md:hidden bg-white border-t border-gray-100"
             >
               <nav className="flex flex-col py-4">
+                <button
+                  onClick={() => handleNavClick('/')}
+                  className="px-6 py-3 font-medium text-gray-600 hover:bg-gray-50 text-left text-sm"
+                >
+                  Home
+                </button>
                 <button
                   onClick={() => handleNavClick('/#services')}
                   className="px-6 py-3 font-medium text-gray-600 hover:bg-gray-50 text-left text-sm"
@@ -222,7 +261,7 @@ const Header = () => {
                 ) : (
                   <button
                     onClick={() => { setMobileMenuOpen(false); setShowAuthModal(true); }}
-                    className="mx-6 mt-2 px-5 py-2.5 bg-[#0A1F44] text-white rounded-lg font-medium text-sm"
+                    className="mx-6 mt-2 px-5 py-2.5 bg-[#3B82F6] text-white rounded-full font-medium text-sm"
                   >
                     Login
                   </button>

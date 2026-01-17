@@ -2,141 +2,126 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const HeroSection = () => {
-  // Apple-style 3D reveal animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const letterVariants = {
-    hidden: { 
-      opacity: 0, 
-      rotateX: -90,
-      y: 80,
-      scale: 0.8,
-    },
+  const textVariants = {
+    hidden: { opacity: 0, y: 40 },
     visible: { 
       opacity: 1, 
-      rotateX: 0,
       y: 0,
-      scale: 1,
       transition: {
         type: 'spring',
         damping: 20,
         stiffness: 100,
-        duration: 1.2,
+        duration: 0.8,
       },
     },
   };
 
-  const subtitleVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 40,
-      rotateX: -45,
-    },
+  const imageVariants = {
+    hidden: { opacity: 0, x: 60, scale: 0.95 },
     visible: { 
       opacity: 1, 
-      y: 0,
-      rotateX: 0,
-      transition: {
-        type: 'spring',
-        damping: 25,
-        stiffness: 120,
-        delay: 0.8,
-      },
-    },
-  };
-
-  const sloganVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 60,
-      scale: 0.9,
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
+      x: 0,
       scale: 1,
       transition: {
         type: 'spring',
-        damping: 20,
+        damping: 25,
         stiffness: 80,
-        delay: 1.1,
+        delay: 0.3,
+        duration: 1,
       },
     },
   };
 
-  const letters = ['V', 'O', 'C', 'T'];
-
   return (
-    <section className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden bg-white">
-      <div className="container mx-auto px-6 text-center relative" style={{ perspective: '1200px' }}>
-        {/* VOCT Logo - Apple-style 3D Reveal */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="flex justify-center items-center"
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-          {letters.map((letter, index) => (
-            <motion.span
-              key={index}
-              variants={letterVariants}
-              className="text-8xl md:text-[12rem] font-bold text-[#0A1F44] leading-none tracking-tight inline-block"
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-gray-50 to-white pt-20">
+      <div className="max-w-7xl mx-auto px-6 w-full">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            className="text-left"
+          >
+            {/* VOCT Logo */}
+            <motion.h1
+              variants={textVariants}
+              className="text-6xl md:text-8xl font-bold text-[#0A1F44] leading-none tracking-tight mb-4"
               style={{ 
                 fontFamily: 'Poppins, sans-serif',
-                transformStyle: 'preserve-3d',
-                textShadow: '0 10px 30px rgba(10, 31, 68, 0.15)',
+                textShadow: '0 8px 24px rgba(10, 31, 68, 0.12)',
               }}
-              data-testid={`hero-letter-${letter}`}
+              data-testid="hero-logo"
             >
-              {letter}
-            </motion.span>
-          ))}
-        </motion.div>
+              VOCT
+            </motion.h1>
 
-        {/* Subtitle - 3D Reveal */}
-        <motion.div
-          variants={subtitleVariants}
-          initial="hidden"
-          animate="visible"
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-          <span 
-            className="text-[#0A1F44]/70 font-semibold tracking-[0.15em] uppercase text-lg inline-block"
-            style={{ 
-              fontFamily: 'Poppins, sans-serif',
-              textShadow: '0 4px 12px rgba(10, 31, 68, 0.1)',
-            }}
-            data-testid="hero-subtitle"
+            {/* Subtitle */}
+            <motion.h2
+              variants={textVariants}
+              transition={{ delay: 0.2 }}
+              className="text-2xl md:text-3xl font-semibold text-[#0A1F44] mb-6"
+              style={{ fontFamily: 'Poppins, sans-serif' }}
+              data-testid="hero-subtitle"
+            >
+              Healthcare Comes Home
+            </motion.h2>
+
+            {/* Slogan */}
+            <motion.p
+              variants={textVariants}
+              transition={{ delay: 0.4 }}
+              className="text-lg md:text-xl text-gray-600 mb-8"
+              style={{ fontFamily: 'Open Sans, sans-serif' }}
+              data-testid="hero-slogan"
+            >
+              Pain is common, but pain is not normal
+            </motion.p>
+
+            {/* CTA Button */}
+            <motion.button
+              variants={textVariants}
+              transition={{ delay: 0.6 }}
+              onClick={() => {
+                const servicesSection = document.getElementById('services');
+                servicesSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn-3d text-base px-8 py-4"
+              data-testid="hero-cta"
+            >
+              Explore Services
+            </motion.button>
+          </motion.div>
+
+          {/* Right Image */}
+          <motion.div
+            variants={imageVariants}
+            initial="hidden"
+            animate="visible"
+            className="relative"
           >
-            Healthcare Comes Home
-          </span>
-        </motion.div>
-
-        {/* Slogan - 3D Reveal */}
-        <motion.p
-          variants={sloganVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-2xl md:text-3xl font-semibold text-gray-900 mt-8"
-          style={{ 
-            fontFamily: 'Poppins, sans-serif',
-            transformStyle: 'preserve-3d',
-          }}
-          data-testid="hero-slogan"
-        >
-          Pain is common, but pain is{' '}
-          <span className="text-[#0A1F44] italic font-bold">NOT</span> normal.
-        </motion.p>
+            <div 
+              className="relative z-10"
+              style={{
+                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.1))',
+              }}
+            >
+              <img
+                src="https://customer-assets.emergentagent.com/job_github-website-2/artifacts/91zcp83t_IMG_8878%203.PNG"
+                alt="Home physiotherapy illustration - therapist helping patient"
+                className="w-full max-w-lg mx-auto lg:max-w-none"
+                data-testid="hero-image"
+              />
+            </div>
+            {/* Background blob */}
+            <div 
+              className="absolute inset-0 -z-10 opacity-30"
+              style={{
+                background: 'radial-gradient(ellipse at center, #E8F4F8 0%, transparent 70%)',
+                transform: 'scale(1.2)',
+              }}
+            />
+          </motion.div>
+        </div>
       </div>
     </section>
   );
