@@ -144,15 +144,14 @@ const HeroSection = () => {
               variants={sloganVariants}
               initial="hidden"
               animate="visible"
-              className="text-2xl md:text-3xl font-semibold text-gray-900 mt-8"
+              className="text-xl md:text-2xl font-semibold text-gray-900 mt-8"
               style={{ 
                 fontFamily: 'Poppins, sans-serif',
                 transformStyle: 'preserve-3d',
               }}
               data-testid="hero-slogan"
             >
-              Pain is common, but pain is{' '}
-              <span className="text-[#0A1F44] italic font-bold">NOT</span> normal.
+              Pain is common, but pain is <span className="text-[#0A1F44] italic font-bold">NOT</span> normal.
             </motion.p>
           </div>
 
