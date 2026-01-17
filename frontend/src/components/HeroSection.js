@@ -90,7 +90,7 @@ const HeroSection = () => {
   const letters = ['V', 'O', 'C', 'T'];
 
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden pt-16" style={{ backgroundColor: '#F9F5F1' }}>
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden pt-16" style={{ backgroundColor: '#FDF8F3' }}>
       <div className="max-w-7xl mx-auto px-6 w-full">
         <div className="grid lg:grid-cols-2 gap-4 items-center">
           {/* Left Content */}
