@@ -158,7 +158,7 @@ const HeroSection = () => {
             className="flex justify-center lg:justify-end"
           >
             <img
-              src="https://customer-assets.emergentagent.com/job_github-website-2/artifacts/91zcp83t_IMG_8878%203.PNG"
+              src="/hero-physio.png"
               alt="Home physiotherapy"
               className="w-full max-w-2xl"
               data-testid="hero-image"
