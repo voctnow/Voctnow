@@ -120,12 +120,12 @@ const HeroSection = () => {
               ))}
             </motion.div>
 
-            {/* Subtitle - 3D Reveal */}
+            {/* Subtitle - 3D Reveal - Centered under VOCT */}
             <motion.div
               variants={subtitleVariants}
               initial="hidden"
               animate="visible"
-              className="flex justify-start"
+              className="flex justify-center max-w-[580px]"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <span 
@@ -140,9 +140,9 @@ const HeroSection = () => {
               </span>
             </motion.div>
 
-            {/* Slogan */}
+            {/* Slogan - Centered under VOCT */}
             <p
-              className="text-2xl md:text-3xl font-semibold text-gray-900 mt-8"
+              className="text-2xl md:text-3xl font-semibold text-gray-900 mt-8 text-center max-w-[580px]"
               style={{ fontFamily: 'Poppins, sans-serif' }}
               data-testid="hero-slogan"
             >
@@ -160,7 +160,8 @@ const HeroSection = () => {
             <img
               src="https://customer-assets.emergentagent.com/job_github-website-2/artifacts/91zcp83t_IMG_8878%203.PNG"
               alt="Home physiotherapy"
-              className="w-full max-w-2xl"
+              className="w-full max-w-2xl mix-blend-multiply"
+              style={{ background: 'transparent' }}
               data-testid="hero-image"
             />
           </motion.div>
