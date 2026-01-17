@@ -141,13 +141,16 @@ const HeroSection = () => {
             </motion.div>
 
             {/* Slogan - Centered under VOCT */}
-            <p
-              className="text-2xl md:text-3xl font-semibold text-gray-900 mt-8 text-center max-w-[580px]"
+            <motion.p
+              variants={sloganVariants}
+              initial="hidden"
+              animate="visible"
+              className="text-xl md:text-2xl font-semibold text-gray-900 mt-8 text-center max-w-[580px] whitespace-nowrap"
               style={{ fontFamily: 'Poppins, sans-serif' }}
               data-testid="hero-slogan"
             >
               Pain is common, but pain is <span className="font-bold italic text-[#0A1F44]">NOT</span> normal.
-            </p>
+            </motion.p>
           </div>
 
           {/* Right Image */}
