@@ -92,22 +92,22 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-white pt-16">
       <div className="max-w-7xl mx-auto px-6 w-full">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-4 items-center">
           {/* Left Content */}
-          <div className="text-center lg:text-left" style={{ perspective: '1200px' }}>
+          <div className="lg:text-left" style={{ perspective: '1200px' }}>
             {/* VOCT Logo - Apple-style 3D Reveal */}
             <motion.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="flex justify-center lg:justify-start items-center"
+              className="flex justify-start items-center"
               style={{ transformStyle: 'preserve-3d' }}
             >
               {letters.map((letter, index) => (
                 <motion.span
                   key={index}
                   variants={letterVariants}
-                  className="text-8xl md:text-[10rem] font-bold text-[#0A1F44] leading-none tracking-tight inline-block"
+                  className="text-8xl md:text-[12rem] font-bold text-[#0A1F44] leading-none tracking-tight inline-block"
                   style={{ 
                     fontFamily: 'Poppins, sans-serif',
                     transformStyle: 'preserve-3d',
@@ -125,6 +125,7 @@ const HeroSection = () => {
               variants={subtitleVariants}
               initial="hidden"
               animate="visible"
+              className="flex justify-start"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <span 
@@ -141,7 +142,7 @@ const HeroSection = () => {
 
             {/* Slogan */}
             <p
-              className="text-xl md:text-2xl font-semibold text-gray-900 mt-8"
+              className="text-2xl md:text-3xl font-semibold text-gray-900 mt-8"
               style={{ fontFamily: 'Poppins, sans-serif' }}
               data-testid="hero-slogan"
             >
@@ -159,7 +160,7 @@ const HeroSection = () => {
             <img
               src="https://customer-assets.emergentagent.com/job_github-website-2/artifacts/91zcp83t_IMG_8878%203.PNG"
               alt="Home physiotherapy"
-              className="w-full max-w-md lg:max-w-lg"
+              className="w-full max-w-2xl"
               data-testid="hero-image"
             />
           </motion.div>
