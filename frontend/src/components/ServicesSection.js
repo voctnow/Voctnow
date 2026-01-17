@@ -179,7 +179,7 @@ const ServicesSection = () => {
             className="text-lg text-gray-500 max-w-2xl mx-auto"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            Comprehensive healthcare solutions delivered at your doorstep
+            Expert care. Zero travel
           </p>
         </motion.div>
 
