@@ -72,18 +72,26 @@ const Footer = () => {
             >
               Stay Connected
             </h4>
-            <div className="flex gap-3">
+            <div className="flex gap-3 mb-4">
               <a 
-                href="#" 
+                href="https://www.instagram.com/voctnow?igsh=MWRkYWVoZHgzNTk1aQ%3D%3D&utm_source=qr" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                data-testid="footer-instagram-link"
               >
-                <i className="ri-linkedin-fill text-lg"></i>
+                <i className="ri-instagram-fill text-lg"></i>
               </a>
+            </div>
+            <div className="mt-4">
               <a 
-                href="#" 
-                className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                href="mailto:support@voct.in" 
+                className="text-blue-200 hover:text-white transition-colors text-sm flex items-center gap-2"
+                style={{ fontFamily: 'Open Sans, sans-serif' }}
+                data-testid="footer-email-link"
               >
-                <i className="ri-twitter-x-fill text-lg"></i>
+                <i className="ri-mail-line"></i>
+                support@voct.in
               </a>
             </div>
           </div>
