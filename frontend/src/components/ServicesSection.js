@@ -10,22 +10,22 @@ import 'swiper/css/pagination';
 
 // Service illustration images - matching the reference style
 const serviceImages = {
-  orthopaedic: 'https://img.freepik.com/free-vector/physiotherapist-helping-patient-rehabilitation-clinic_74855-14065.jpg?w=600',
-  neurological: 'https://img.freepik.com/free-vector/rehabilitation-center-physiotherapy_74855-6695.jpg?w=600',
-  geriatric: 'https://img.freepik.com/free-vector/elderly-people-doing-sport_74855-5763.jpg?w=600',
-  womens_health: 'https://img.freepik.com/free-vector/pregnant-woman-doing-prenatal-yoga_74855-5277.jpg?w=600',
-  lifestyle: 'https://img.freepik.com/free-vector/physiotherapy-rehabilitation-people-composition_1284-62854.jpg?w=600',
-  sports: 'https://img.freepik.com/free-vector/sports-physiotherapist-treating-athlete_74855-10684.jpg?w=600',
+  orthopaedic: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1fa7c.svg',
+  neurological: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f9e0.svg',
+  geriatric: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f9d3.svg',
+  womens_health: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f930.svg',
+  lifestyle: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f9d8.svg',
+  sports: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f3c3.svg',
 };
 
-// Fallback local images with similar style
-const localServiceImages = {
-  orthopaedic: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&q=80',
-  neurological: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&q=80',
-  geriatric: 'https://images.unsplash.com/photo-1447452001602-7090c7ab2db3?w=500&q=80',
-  womens_health: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500&q=80',
-  lifestyle: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&q=80',
-  sports: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&q=80',
+// Service background colors
+const serviceColors = {
+  orthopaedic: { bg: 'bg-blue-50', accent: '#3B82F6' },
+  neurological: { bg: 'bg-purple-50', accent: '#8B5CF6' },
+  geriatric: { bg: 'bg-emerald-50', accent: '#10B981' },
+  womens_health: { bg: 'bg-pink-50', accent: '#EC4899' },
+  lifestyle: { bg: 'bg-amber-50', accent: '#F59E0B' },
+  sports: { bg: 'bg-red-50', accent: '#EF4444' },
 };
 
 const ServiceCard = ({ service, index, onBook }) => {
