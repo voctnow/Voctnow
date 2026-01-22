@@ -16,6 +16,13 @@ import BookingPage from "./components/BookingPage";
 import JoinUsPage from "./components/JoinUsPage";
 import ProfilePage from "./components/ProfilePage";
 import AboutPage from "./components/AboutPage";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsAndConditions from "./components/TermsAndConditions";
+
+// Internal Dashboard (Hidden from customers)
+import InternalLogin from "./components/internal/InternalLogin";
+import PractitionerDashboard from "./components/internal/PractitionerDashboard";
+import AdminDashboard from "./components/internal/AdminDashboard";
 
 // Home Page
 const HomePage = () => {
@@ -57,14 +64,21 @@ function App() {
     <AuthProvider>
       <div className="App">
         <BrowserRouter>
-          <Header />
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/book/:serviceId" element={<><BookingPage /><Footer /></>} />
-            <Route path="/join-us" element={<><JoinUsPage /><Footer /></>} />
-            <Route path="/profile" element={<><ProfilePage /><Footer /></>} />
-            <Route path="/bookings" element={<BookingsPage />} />
-            <Route path="/about" element={<><AboutPage /><Footer /></>} />
+            {/* Public Routes with Header */}
+            <Route path="/" element={<><Header /><HomePage /></>} />
+            <Route path="/book/:serviceId" element={<><Header /><BookingPage /><Footer /></>} />
+            <Route path="/join-us" element={<><Header /><JoinUsPage /><Footer /></>} />
+            <Route path="/profile" element={<><Header /><ProfilePage /><Footer /></>} />
+            <Route path="/bookings" element={<><Header /><BookingsPage /></>} />
+            <Route path="/about" element={<><Header /><AboutPage /><Footer /></>} />
+            <Route path="/privacy-policy" element={<><Header /><PrivacyPolicy /><Footer /></>} />
+            <Route path="/terms-and-conditions" element={<><Header /><TermsAndConditions /><Footer /></>} />
+            
+            {/* Internal Routes (No public header/footer) */}
+            <Route path="/internal/login" element={<InternalLogin />} />
+            <Route path="/internal/practitioner/*" element={<PractitionerDashboard />} />
+            <Route path="/internal/admin/*" element={<AdminDashboard />} />
           </Routes>
         </BrowserRouter>
       </div>
