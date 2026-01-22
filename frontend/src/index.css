@@ -182,6 +182,33 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 5px;
 }
 
+/* Service Swiper 3D Animation */
+.service-swiper .swiper-slide {
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.service-swiper .swiper-slide-active {
+  transform: scale(1.02);
+}
+
+.service-swiper .swiper-slide:not(.swiper-slide-active) {
+  opacity: 0.85;
+}
+
+/* Touch/Drag improvements */
+.service-swiper {
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.service-swiper:active {
+  cursor: grabbing;
+}
+  width: 28px;
+  border-radius: 5px;
+}
+
 /* Modal/Slide Panel */
 .slide-panel {
   position: fixed;
