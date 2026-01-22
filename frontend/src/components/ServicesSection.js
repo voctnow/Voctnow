@@ -8,32 +8,49 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Light attractive minimal colors for each service card
-const cardColors = [
-  { bg: 'from-rose-400 to-pink-500', shadow: 'rgba(244, 63, 94, 0.3)' },
-  { bg: 'from-amber-400 to-orange-500', shadow: 'rgba(251, 146, 60, 0.3)' },
-  { bg: 'from-emerald-400 to-teal-500', shadow: 'rgba(20, 184, 166, 0.3)' },
-  { bg: 'from-sky-400 to-cyan-500', shadow: 'rgba(6, 182, 212, 0.3)' },
-  { bg: 'from-violet-400 to-purple-500', shadow: 'rgba(139, 92, 246, 0.3)' },
-  { bg: 'from-fuchsia-400 to-pink-500', shadow: 'rgba(232, 121, 249, 0.3)' },
-];
+// Service cover images and colors
+const serviceCovers = {
+  orthopaedic: {
+    image: 'https://images.unsplash.com/photo-1649751361457-01d3a696c7e6?w=600&q=80',
+    gradient: 'from-blue-600/90 to-blue-800/90',
+    color: '#1e40af'
+  },
+  neurological: {
+    image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&q=80',
+    gradient: 'from-purple-600/90 to-purple-800/90',
+    color: '#7c3aed'
+  },
+  geriatric: {
+    image: 'https://images.unsplash.com/photo-1758691462321-9b6c98c40f7e?w=600&q=80',
+    gradient: 'from-emerald-600/90 to-emerald-800/90',
+    color: '#059669'
+  },
+  womens_health: {
+    image: 'https://images.unsplash.com/photo-1717500252780-036bfd89f810?w=600&q=80',
+    gradient: 'from-pink-500/90 to-rose-600/90',
+    color: '#db2777'
+  },
+  lifestyle: {
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&q=80',
+    gradient: 'from-amber-500/90 to-orange-600/90',
+    color: '#d97706'
+  },
+  sports: {
+    image: 'https://images.unsplash.com/photo-4506160/pexels-photo-4506160.jpeg?w=600&q=80',
+    gradient: 'from-red-500/90 to-red-700/90',
+    color: '#dc2626'
+  },
+};
 
-// Service icons mapping
-const serviceIcons = {
-  orthopaedic: 'ri-walk-line',
-  neurological: 'ri-brain-line',
-  geriatric: 'ri-heart-pulse-line',
-  womens_health: 'ri-women-line',
-  lifestyle: 'ri-leaf-line',
-  sports: 'ri-run-line',
-  default: 'ri-health-book-line',
+const defaultCover = {
+  image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80',
+  gradient: 'from-gray-600/90 to-gray-800/90',
+  color: '#4b5563'
 };
 
 const FlipCard = ({ service, index, onBook }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const colorIndex = index % cardColors.length;
-  const cardColor = cardColors[colorIndex];
-  const icon = serviceIcons[service.id] || serviceIcons.default;
+  const cover = serviceCovers[service.id] || defaultCover;
 
   const handleCardInteraction = () => {
     setIsFlipped(!isFlipped);
@@ -45,7 +62,7 @@ const FlipCard = ({ service, index, onBook }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="min-w-[300px] sm:min-w-[340px] md:min-w-[380px] h-[480px] cursor-pointer snap-center"
+      className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px] h-[420px] sm:h-[450px] md:h-[480px] cursor-pointer snap-center"
       style={{ perspective: '1000px' }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
@@ -58,45 +75,57 @@ const FlipCard = ({ service, index, onBook }) => {
         style={{ transformStyle: 'preserve-3d' }}
         className="relative w-full h-full"
       >
-        {/* Front Side */}
+        {/* Front Side - Illustration Cover */}
         <div 
-          className="absolute inset-0 rounded-3xl p-8 md:p-10 bg-white flex flex-col items-center justify-center text-center"
+          className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{ 
             backfaceVisibility: 'hidden',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.08)'
+            boxShadow: '0 10px 40px rgba(0,0,0,0.15)'
           }}
         >
-          <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${cardColor.bg} flex items-center justify-center mb-6 md:mb-8 shadow-lg`}
-               style={{ boxShadow: `0 8px 24px ${cardColor.shadow}` }}>
-            <i className={`${icon} text-2xl md:text-3xl text-white`}></i>
-          </div>
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ 
+              backgroundImage: `url(${cover.image})`,
+              filter: 'brightness(0.7)',
+            }}
+          />
+          {/* Gradient Overlay */}
+          <div className={`absolute inset-0 bg-gradient-to-t ${cover.gradient}`} />
           
-          <h3 
-            className="text-xl md:text-2xl font-bold text-[#0A1F44]"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
-          >
-            {service.name}
-          </h3>
-          
-          <div className="flex items-center gap-2 text-gray-400 font-medium text-sm mt-6 md:mt-8">
-            <span className="hidden md:inline">Hover to explore</span>
-            <span className="md:hidden">Tap to explore</span>
-            <i className="ri-arrow-right-line"></i>
+          {/* Content */}
+          <div className="relative h-full flex flex-col justify-end p-6 sm:p-8">
+            <h3 
+              className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight"
+              style={{ 
+                fontFamily: 'Poppins, sans-serif',
+                textShadow: '0 4px 20px rgba(0,0,0,0.3)',
+              }}
+            >
+              {service.name}
+            </h3>
+            <div className="flex items-center gap-2 text-white/70 font-medium text-sm mt-4">
+              <span className="hidden md:inline">Hover to explore</span>
+              <span className="md:hidden">Tap to explore</span>
+              <i className="ri-arrow-right-line"></i>
+            </div>
           </div>
         </div>
 
         {/* Back Side */}
         <div 
-          className={`absolute inset-0 rounded-3xl p-6 md:p-8 bg-gradient-to-br ${cardColor.bg} text-white flex flex-col`}
+          className="absolute inset-0 rounded-3xl p-5 sm:p-6 md:p-8 text-white flex flex-col overflow-hidden"
           style={{ 
             backfaceVisibility: 'hidden', 
             transform: 'rotateY(180deg)',
-            boxShadow: `0 20px 50px ${cardColor.shadow}, 0 10px 30px rgba(0,0,0,0.15)`,
+            backgroundColor: cover.color,
+            boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
           }}
         >
           <div className="flex flex-col h-full">
             <h3 
-              className="text-2xl md:text-3xl font-bold mb-2"
+              className="text-2xl sm:text-3xl font-bold mb-2"
               style={{ 
                 fontFamily: 'Poppins, sans-serif',
                 textShadow: '0 4px 12px rgba(0,0,0,0.2)',
@@ -106,7 +135,7 @@ const FlipCard = ({ service, index, onBook }) => {
             </h3>
             
             <p 
-              className="text-white/80 text-sm mb-4 md:mb-6"
+              className="text-white/80 text-sm mb-4"
               style={{ fontFamily: 'Open Sans, sans-serif' }}
             >
               {service.description}
@@ -126,7 +155,7 @@ const FlipCard = ({ service, index, onBook }) => {
                 e.stopPropagation();
                 onBook(service.id);
               }}
-              className="w-full py-3 md:py-4 bg-white/95 text-gray-800 rounded-xl font-bold text-base transition-all duration-200 hover:bg-white hover:scale-[1.02] mt-4"
+              className="w-full py-3 md:py-4 bg-white text-gray-800 rounded-xl font-bold text-base transition-all duration-200 hover:scale-[1.02] mt-4"
               style={{ 
                 fontFamily: 'Poppins, sans-serif',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
@@ -143,13 +172,19 @@ const FlipCard = ({ service, index, onBook }) => {
 };
 
 const ServicesSection = () => {
-  const [services, setServices] = useState([]);
   const navigate = useNavigate();
+  const [services, setServices] = useState([]);
 
   useEffect(() => {
-    getServices()
-      .then((res) => setServices(res.data))
-      .catch((err) => console.error('Failed to load services:', err));
+    const fetchServices = async () => {
+      try {
+        const response = await getServices();
+        setServices(response.data);
+      } catch (error) {
+        console.error('Failed to fetch services:', error);
+      }
+    };
+    fetchServices();
   }, []);
 
   const handleBookService = (serviceId) => {
@@ -157,46 +192,45 @@ const ServicesSection = () => {
   };
 
   return (
-    <section id="services" className="py-20 bg-gradient-to-b from-white to-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Section Header */}
+    <section id="services" className="py-16 md:py-24 bg-gray-50 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
           <h2 
-            className="text-4xl md:text-5xl font-bold text-[#0A1F44] mb-4"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0A1F44] mb-4"
             style={{ fontFamily: 'Poppins, sans-serif' }}
-            data-testid="services-title"
           >
             Our Services
           </h2>
           <p 
-            className="text-lg text-gray-500 max-w-2xl mx-auto"
+            className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
             Care that moves with you
           </p>
         </motion.div>
 
-        {/* Infinite Loop Carousel */}
+        {/* Carousel */}
         <Swiper
           modules={[Navigation, Pagination]}
-          spaceBetween={24}
-          slidesPerView={1}
+          spaceBetween={20}
+          slidesPerView={1.2}
           navigation
           pagination={{ clickable: true }}
           loop={true}
           grabCursor={true}
           speed={600}
-          effect="slide"
+          centeredSlides={true}
           breakpoints={{
-            640: { slidesPerView: 1.5, centeredSlides: true },
-            1024: { slidesPerView: 2.5, centeredSlides: true },
-            1280: { slidesPerView: 3, centeredSlides: false },
+            480: { slidesPerView: 1.3, spaceBetween: 20 },
+            640: { slidesPerView: 1.5, spaceBetween: 24 },
+            1024: { slidesPerView: 2.5, spaceBetween: 24 },
+            1280: { slidesPerView: 3, spaceBetween: 24, centeredSlides: false },
           }}
           className="pb-16 service-swiper"
         >
