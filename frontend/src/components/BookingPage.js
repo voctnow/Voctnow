@@ -6,6 +6,14 @@ import { useAuth } from '../context/AuthContext';
 import AuthModal from './AuthModal';
 import { format, addDays } from 'date-fns';
 
+const sessionPlans = [
+  { sessions: 1, price: 999, label: '1 Session', tag: null },
+  { sessions: 3, price: 2899, label: '3 Sessions', tag: null },
+  { sessions: 7, price: 6299, label: '7 Sessions', tag: 'Most Popular' },
+  { sessions: 15, price: 12735, label: '15 Sessions', tag: 'Recommended for ongoing care' },
+  { sessions: 30, price: 23970, label: '30 Sessions', tag: 'Best for long-term transformation' },
+];
+
 const BookingPage = () => {
   const { serviceId } = useParams();
   const [searchParams] = useSearchParams();
@@ -14,13 +22,12 @@ const BookingPage = () => {
   const assessmentId = searchParams.get('assessment');
 
   const [service, setService] = useState(null);
-  const [pricing, setPricing] = useState({});
-  const [step, setStep] = useState(1); // 1: sessions, 2: details, 3: schedule, 4: payment, 5: confirmation
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const [bookingData, setBookingData] = useState({
-    session_count: 1,
+    session_count: 7,
     customer_name: '',
     customer_phone: '',
     customer_email: '',
@@ -37,12 +44,8 @@ const BookingPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [serviceRes, pricingRes] = await Promise.all([
-          getService(serviceId),
-          getPricing(),
-        ]);
+        const serviceRes = await getService(serviceId);
         setService(serviceRes.data);
-        setPricing(pricingRes.data);
       } catch (error) {
         console.error('Failed to load data:', error);
       }
@@ -66,7 +69,8 @@ const BookingPage = () => {
   };
 
   const getAmount = () => {
-    return pricing[bookingData.session_count] || bookingData.session_count * 999;
+    const plan = sessionPlans.find(p => p.sessions === bookingData.session_count);
+    return plan ? plan.price : bookingData.session_count * 999;
   };
 
   const generateTimeSlots = () => {
@@ -85,6 +89,9 @@ const BookingPage = () => {
       dates.push({
         value: format(date, 'yyyy-MM-dd'),
         label: format(date, 'EEE, MMM d'),
+        day: format(date, 'd'),
+        month: format(date, 'MMM'),
+        weekday: format(date, 'EEE'),
       });
     }
     return dates;
@@ -140,7 +147,6 @@ const BookingPage = () => {
 
   const handlePayment = async () => {
     setLoading(true);
-    // MOCKED PAYMENT - In production, use Razorpay
     try {
       await mockPaymentSuccess(createdBooking.id);
       setStep(5);
@@ -162,7 +168,7 @@ const BookingPage = () => {
   return (
     <>
       <div className="min-h-screen pt-24 pb-12 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-4 md:px-6">
           {/* Progress Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
@@ -181,7 +187,7 @@ const BookingPage = () => {
                   </div>
                   {index < 4 && (
                     <div
-                      className={`w-12 md:w-20 h-1 mx-1 ${
+                      className={`w-8 md:w-20 h-1 mx-1 ${
                         step > index + 1 ? 'bg-accent-green' : 'bg-gray-200'
                       }`}
                     />
@@ -195,10 +201,10 @@ const BookingPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-navy text-white rounded-2xl p-6 mb-8"
+            className="bg-navy text-white rounded-2xl p-6 md:p-8 mb-8"
           >
-            <h1 className="font-poppins font-bold text-2xl mb-2">{service.name}</h1>
-            <p className="text-blue-200">{service.description}</p>
+            <p className="text-blue-200 text-sm md:text-base mb-2">Start your recovery today</p>
+            <h1 className="font-poppins font-bold text-2xl md:text-3xl">{service.name}</h1>
           </motion.div>
 
           {/* Step Content */}
@@ -206,29 +212,46 @@ const BookingPage = () => {
             key={step}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-3xl shadow-card p-8"
+            className="bg-white rounded-3xl shadow-card p-6 md:p-8"
           >
             {/* Step 1: Session Selection */}
             {step === 1 && (
               <>
-                <h2 className="font-poppins font-bold text-2xl text-navy mb-6">
-                  Choose Number of Sessions
+                <h2 className="font-poppins font-bold text-xl md:text-2xl text-navy mb-6">
+                  Choose Your Plan
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-                  {Object.entries(pricing).map(([days, price]) => (
+                <div className="space-y-3 mb-8">
+                  {sessionPlans.map((plan) => (
                     <div
-                      key={days}
-                      onClick={() => handleInputChange('session_count', parseInt(days))}
-                      className={`p-4 rounded-2xl border-2 cursor-pointer transition-all text-center ${
-                        bookingData.session_count === parseInt(days)
+                      key={plan.sessions}
+                      onClick={() => handleInputChange('session_count', plan.sessions)}
+                      className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                        bookingData.session_count === plan.sessions
                           ? 'border-navy bg-blue-50'
                           : 'border-gray-200 hover:border-navy'
                       }`}
-                      data-testid={`session-${days}`}
+                      data-testid={`session-${plan.sessions}`}
                     >
-                      <div className="font-poppins font-bold text-2xl text-navy">{days}</div>
-                      <div className="text-sm text-gray-600">Sessions</div>
-                      <div className="font-bold text-accent-green mt-2">₹{price}</div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            bookingData.session_count === plan.sessions
+                              ? 'border-navy bg-navy'
+                              : 'border-gray-300'
+                          }`}>
+                            {bookingData.session_count === plan.sessions && (
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-poppins font-bold text-navy">{plan.label}</div>
+                            {plan.tag && (
+                              <div className="text-xs text-accent-green font-medium mt-1">{plan.tag}</div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="font-bold text-navy text-lg">₹{plan.price.toLocaleString()}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -238,7 +261,7 @@ const BookingPage = () => {
                       {bookingData.session_count} sessions of {service.name}
                     </span>
                     <span className="font-poppins font-bold text-xl text-navy">
-                      ₹{getAmount()}
+                      ₹{getAmount().toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -255,7 +278,7 @@ const BookingPage = () => {
             {/* Step 2: Customer Details */}
             {step === 2 && (
               <>
-                <h2 className="font-poppins font-bold text-2xl text-navy mb-6">
+                <h2 className="font-poppins font-bold text-xl md:text-2xl text-navy mb-6">
                   Customer Details
                 </h2>
                 <div className="space-y-4">
@@ -370,7 +393,7 @@ const BookingPage = () => {
             {/* Step 3: Schedule */}
             {step === 3 && (
               <>
-                <h2 className="font-poppins font-bold text-2xl text-navy mb-6">
+                <h2 className="font-poppins font-bold text-xl md:text-2xl text-navy mb-6">
                   Select Date & Time
                 </h2>
                 <div className="space-y-6">
@@ -378,18 +401,20 @@ const BookingPage = () => {
                     <label className="block font-opensans font-medium text-gray-600 mb-3">
                       Preferred Date *
                     </label>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {generateDateOptions().slice(0, 8).map((date) => (
+                    <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
+                      {generateDateOptions().map((date) => (
                         <div
                           key={date.value}
                           onClick={() => handleInputChange('preferred_date', date.value)}
-                          className={`p-3 rounded-xl border-2 cursor-pointer text-center transition-all ${
+                          className={`p-2 md:p-3 rounded-xl border-2 cursor-pointer text-center transition-all ${
                             bookingData.preferred_date === date.value
                               ? 'border-navy bg-blue-50'
                               : 'border-gray-200 hover:border-navy'
                           }`}
                         >
-                          <div className="font-medium text-sm">{date.label}</div>
+                          <div className="text-xs text-gray-500">{date.weekday}</div>
+                          <div className="font-bold text-lg text-navy">{date.day}</div>
+                          <div className="text-xs text-gray-500">{date.month}</div>
                         </div>
                       ))}
                     </div>
@@ -437,7 +462,7 @@ const BookingPage = () => {
             {/* Step 4: Payment */}
             {step === 4 && createdBooking && (
               <>
-                <h2 className="font-poppins font-bold text-2xl text-navy mb-6">
+                <h2 className="font-poppins font-bold text-xl md:text-2xl text-navy mb-6">
                   Complete Payment
                 </h2>
                 <div className="bg-gray-50 rounded-xl p-6 mb-6">
@@ -461,7 +486,7 @@ const BookingPage = () => {
                     </div>
                     <div className="border-t pt-2 mt-2 flex justify-between">
                       <span className="font-semibold">Total Amount</span>
-                      <span className="font-bold text-xl text-navy">₹{getAmount()}</span>
+                      <span className="font-bold text-xl text-navy">₹{getAmount().toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -476,7 +501,7 @@ const BookingPage = () => {
                   className="btn-3d w-full disabled:opacity-50"
                   data-testid="complete-payment"
                 >
-                  {loading ? 'Processing...' : `Pay ₹${getAmount()}`}
+                  {loading ? 'Processing...' : `Pay ₹${getAmount().toLocaleString()}`}
                 </button>
               </>
             )}
@@ -489,7 +514,7 @@ const BookingPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h2 className="font-poppins font-bold text-3xl text-navy mb-4">
+                <h2 className="font-poppins font-bold text-2xl md:text-3xl text-navy mb-4">
                   Booking Confirmed!
                 </h2>
                 <p className="text-gray-600 mb-2">
@@ -498,20 +523,12 @@ const BookingPage = () => {
                 <p className="text-gray-600 mb-8">
                   A confirmation has been sent to your phone. Our team will assign a physiotherapist shortly.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button
-                    onClick={() => navigate('/bookings')}
-                    className="btn-3d"
-                  >
-                    View My Bookings
-                  </button>
-                  <button
-                    onClick={() => navigate('/')}
-                    className="px-8 py-3 border-2 border-navy text-navy rounded-full font-semibold hover:bg-navy hover:text-white transition-all"
-                  >
-                    Back to Home
-                  </button>
-                </div>
+                <button
+                  onClick={() => navigate('/')}
+                  className="btn-3d px-8"
+                >
+                  Back to Home
+                </button>
               </div>
             )}
           </motion.div>
