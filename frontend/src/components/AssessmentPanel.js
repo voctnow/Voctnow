@@ -5,11 +5,12 @@ import { createAssessment } from '../api';
 
 const chiefComplaints = [
   { id: 'joint_muscle', label: 'Joint or muscle pain / injury', icon: 'ri-heart-pulse-line' },
-  { id: 'nerve_related', label: 'Nerve-related problem', icon: 'ri-brain-line' },
+  { id: 'nerve_related', label: 'Nerve / Brain related problem', icon: 'ri-brain-line' },
   { id: 'walking_balance', label: 'Difficulty walking or balance issues', icon: 'ri-walk-line' },
   { id: 'post_surgery', label: 'Surgery done recently', icon: 'ri-surgical-mask-line' },
   { id: 'sports_injury', label: 'Sports injury or fitness pain', icon: 'ri-football-line' },
   { id: 'community_care', label: 'Community / home-bound care', icon: 'ri-home-heart-line' },
+  { id: 'pregnancy_care', label: 'Pregnancy Care', icon: 'ri-women-line' },
 ];
 
 const conditionalQuestions = {
@@ -20,7 +21,7 @@ const conditionalQuestions = {
     { id: 'painWithMovement', question: 'Does pain increase with movement?', type: 'boolean' },
   ],
   nerve_related: [
-    { id: 'neuroDiagnosis', question: 'Have you been diagnosed with', type: 'select', options: ['Stroke', 'Spinal cord injury', "Parkinson's", 'Nerve compression / slipped disc'] },
+    { id: 'neuroDiagnosis', question: 'Have you been diagnosed with', type: 'select', options: ['Stroke / Paralysis', 'Spinal cord injury', "Parkinson's", 'Nerve compression / slipped disc'] },
     { id: 'neuroSymptoms', question: 'Current difficulty', type: 'select', options: ['Weakness in arm/leg', 'Tingling or numbness', 'Difficulty walking', 'Balance problems'] },
     { id: 'walkIndependently', question: 'Can you walk independently?', type: 'select', options: ['Yes', 'With support', 'No'] },
   ],
@@ -30,19 +31,24 @@ const conditionalQuestions = {
     { id: 'assistanceAtHome', question: 'Need assistance at home?', type: 'boolean' },
   ],
   post_surgery: [
-    { id: 'surgeryType', question: 'Surgery type', type: 'select', options: ['Knee replacement', 'Hip replacement', 'Spine surgery', 'Fracture fixation'] },
+    { id: 'surgeryType', question: 'Surgery type', type: 'select', options: ['Knee replacement', 'Hip replacement', 'Spine surgery', 'Back Surgery', 'Neck Surgery', 'Fracture fixation'] },
     { id: 'surgeryDays', question: 'Days since surgery', type: 'number' },
     { id: 'stitchesRemoved', question: 'Stitches removed?', type: 'boolean' },
     { id: 'doctorAdvised', question: 'Doctor advised physiotherapy?', type: 'boolean' },
   ],
   sports_injury: [
     { id: 'activityLevel', question: 'Activity level', type: 'select', options: ['Gym', 'Running', 'Sports (football, cricket, etc.)'] },
-    { id: 'injuryType', question: 'Injury type', type: 'select', options: ['Muscle strain', 'Ligament injury', 'Overuse pain'] },
+    { id: 'injuryType', question: 'Injury type', type: 'select', options: ['Muscle strain', 'Ligament injury', 'Overuse pain', 'Fracture'] },
     { id: 'duringActivity', question: 'Happened during sports?', type: 'boolean' },
   ],
   community_care: [
-    { id: 'careType', question: 'Looking for', type: 'select', options: ['Long-term home care', 'Bed-bound patient rehab', 'Group physiotherapy'] },
+    { id: 'careType', question: 'Looking for', type: 'select', options: ['Long-term home care', 'Bed-bound patient rehab'] },
     { id: 'patientCondition', question: 'Patient condition', type: 'select', options: ['Bed-bound', 'Wheelchair-bound', 'Limited mobility'] },
+  ],
+  pregnancy_care: [
+    { id: 'trimester', question: 'Current trimester', type: 'select', options: ['First trimester', 'Second trimester', 'Third trimester', 'Postpartum'] },
+    { id: 'concerns', question: 'Main concerns', type: 'select', options: ['Back pain', 'Pelvic pain', 'Swelling', 'Posture issues', 'Postpartum recovery'] },
+    { id: 'doctorApproval', question: 'Doctor approved for exercise?', type: 'boolean' },
   ],
 };
 
