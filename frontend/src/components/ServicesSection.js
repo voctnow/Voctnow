@@ -179,7 +179,7 @@ const ServicesSection = () => {
             className="text-lg text-gray-500 max-w-2xl mx-auto"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            Expert care. Zero travel
+            Care that moves with you
           </p>
         </motion.div>
 
