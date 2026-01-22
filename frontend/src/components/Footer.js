@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="bg-[#0A1F44] text-white py-16">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-12">
+        <div className="grid md:grid-cols-4 gap-12">
           {/* Brand */}
           <div>
             <h3 
@@ -39,6 +39,28 @@ const Footer = () => {
               <li>
                 <Link to="/about" className="text-blue-200 hover:text-white transition-colors">
                   Mission & Vision
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 
+              className="font-semibold mb-5 text-sm uppercase tracking-wider text-blue-300"
+              style={{ fontFamily: 'Poppins, sans-serif' }}
+            >
+              Legal
+            </h4>
+            <ul className="space-y-3 text-sm" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              <li>
+                <Link to="/privacy-policy" className="text-blue-200 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms-and-conditions" className="text-blue-200 hover:text-white transition-colors">
+                  Terms & Conditions
                 </Link>
               </li>
             </ul>

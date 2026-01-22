@@ -8,17 +8,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Service cover images - processed local images
+// Service cover images
 const serviceImages = {
   orthopaedic: '/service-orthopaedic.png',
-  neurological: '/service-neurological.png', // Will be added when user provides
+  neurological: '/service-neurological.png',
   geriatric: '/service-geriatric.png',
   womens_health: '/service-womens_health.png',
   lifestyle: '/service-lifestyle.png',
   sports: '/service-sports.png',
 };
 
-// Fallback colors for cards
+// Service accent colors for back side
 const serviceColors = {
   orthopaedic: '#3B82F6',
   neurological: '#8B5CF6',
@@ -56,7 +56,7 @@ const ServiceCard = ({ service, index, onBook }) => {
         style={{ transformStyle: 'preserve-3d' }}
         className="relative w-full h-[360px] sm:h-[400px]"
       >
-        {/* Front Side - Image Card */}
+        {/* Front Side - Image Card with faded edges */}
         <div 
           className="absolute inset-0 bg-white rounded-2xl overflow-hidden"
           style={{ 
@@ -64,23 +64,37 @@ const ServiceCard = ({ service, index, onBook }) => {
             boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
           }}
         >
-          {/* Image Container */}
-          <div className="h-[280px] sm:h-[310px] bg-white flex items-center justify-center overflow-hidden">
+          {/* Image Container with faded edges */}
+          <div className="h-[280px] sm:h-[310px] relative overflow-hidden">
             <img 
               src={imageUrl}
               alt={service.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
+              style={{
+                maskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black 70%, transparent 100%)',
+              }}
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
             />
+            {/* Faded overlay at bottom */}
+            <div 
+              className="absolute bottom-0 left-0 right-0 h-24"
+              style={{
+                background: 'linear-gradient(to top, white 0%, transparent 100%)',
+              }}
+            />
           </div>
           
-          {/* Service Name */}
-          <div className="p-4 text-center bg-white border-t border-gray-100">
+          {/* Service Name - Navy Blue */}
+          <div className="p-4 text-center bg-white">
             <h3 
-              className="text-base sm:text-lg font-semibold text-[#4B5563]"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
+              className="text-base sm:text-lg font-semibold"
+              style={{ 
+                fontFamily: 'Poppins, sans-serif',
+                color: '#0A1F44'
+              }}
             >
               {service.name}
             </h3>
