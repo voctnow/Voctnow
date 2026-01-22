@@ -35,16 +35,21 @@ const FlipCard = ({ service, index, onBook }) => {
   const cardColor = cardColors[colorIndex];
   const icon = serviceIcons[service.id] || serviceIcons.default;
 
+  const handleCardInteraction = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="min-w-[340px] md:min-w-[380px] h-[480px] cursor-pointer snap-center"
+      className="min-w-[300px] sm:min-w-[340px] md:min-w-[380px] h-[480px] cursor-pointer snap-center"
       style={{ perspective: '1000px' }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
+      onClick={handleCardInteraction}
       data-testid={`service-card-${service.id}`}
     >
       <motion.div
@@ -53,38 +58,36 @@ const FlipCard = ({ service, index, onBook }) => {
         style={{ transformStyle: 'preserve-3d' }}
         className="relative w-full h-full"
       >
-        {/* Front Side - Clean Minimal Card with only Title */}
+        {/* Front Side */}
         <div 
-          className="absolute inset-0 rounded-3xl p-10 bg-white flex flex-col items-center justify-center text-center"
+          className="absolute inset-0 rounded-3xl p-8 md:p-10 bg-white flex flex-col items-center justify-center text-center"
           style={{ 
             backfaceVisibility: 'hidden',
             boxShadow: '0 8px 32px rgba(0,0,0,0.08)'
           }}
         >
-          {/* Icon */}
-          <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${cardColor.bg} flex items-center justify-center mb-8 shadow-lg`}
+          <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br ${cardColor.bg} flex items-center justify-center mb-6 md:mb-8 shadow-lg`}
                style={{ boxShadow: `0 8px 24px ${cardColor.shadow}` }}>
-            <i className={`${icon} text-3xl text-white`}></i>
+            <i className={`${icon} text-2xl md:text-3xl text-white`}></i>
           </div>
           
-          {/* Title Only */}
           <h3 
-            className="text-2xl font-bold text-[#0A1F44]"
+            className="text-xl md:text-2xl font-bold text-[#0A1F44]"
             style={{ fontFamily: 'Poppins, sans-serif' }}
           >
             {service.name}
           </h3>
           
-          {/* Hover prompt */}
-          <div className="flex items-center gap-2 text-gray-400 font-medium text-sm mt-8">
-            <span>Hover to explore</span>
+          <div className="flex items-center gap-2 text-gray-400 font-medium text-sm mt-6 md:mt-8">
+            <span className="hidden md:inline">Hover to explore</span>
+            <span className="md:hidden">Tap to explore</span>
             <i className="ri-arrow-right-line"></i>
           </div>
         </div>
 
-        {/* Back Side - Colorful with 3D effect, shadow and big heading */}
+        {/* Back Side */}
         <div 
-          className={`absolute inset-0 rounded-3xl p-8 bg-gradient-to-br ${cardColor.bg} text-white flex flex-col`}
+          className={`absolute inset-0 rounded-3xl p-6 md:p-8 bg-gradient-to-br ${cardColor.bg} text-white flex flex-col`}
           style={{ 
             backfaceVisibility: 'hidden', 
             transform: 'rotateY(180deg)',
@@ -92,9 +95,8 @@ const FlipCard = ({ service, index, onBook }) => {
           }}
         >
           <div className="flex flex-col h-full">
-            {/* Big Title with 3D shadow effect */}
             <h3 
-              className="text-3xl font-bold mb-2"
+              className="text-2xl md:text-3xl font-bold mb-2"
               style={{ 
                 fontFamily: 'Poppins, sans-serif',
                 textShadow: '0 4px 12px rgba(0,0,0,0.2)',
@@ -103,15 +105,13 @@ const FlipCard = ({ service, index, onBook }) => {
               {service.name}
             </h3>
             
-            {/* Description */}
             <p 
-              className="text-white/80 text-sm mb-6"
+              className="text-white/80 text-sm mb-4 md:mb-6"
               style={{ fontFamily: 'Open Sans, sans-serif' }}
             >
               {service.description}
             </p>
             
-            {/* Service items */}
             <ul className="space-y-2 flex-1 overflow-y-auto">
               {service.sub_services.map((item, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm">
@@ -121,13 +121,12 @@ const FlipCard = ({ service, index, onBook }) => {
               ))}
             </ul>
             
-            {/* Book button */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onBook(service.id);
               }}
-              className="w-full py-4 bg-white/95 text-gray-800 rounded-xl font-bold text-base transition-all duration-200 hover:bg-white hover:scale-[1.02] mt-4"
+              className="w-full py-3 md:py-4 bg-white/95 text-gray-800 rounded-xl font-bold text-base transition-all duration-200 hover:bg-white hover:scale-[1.02] mt-4"
               style={{ 
                 fontFamily: 'Poppins, sans-serif',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
