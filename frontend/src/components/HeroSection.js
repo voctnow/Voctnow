@@ -73,15 +73,15 @@ const HeroSection = () => {
   };
 
   const imageVariants = {
-    hidden: { opacity: 0, x: 50 },
+    hidden: { opacity: 0, y: 30 },
     visible: { 
       opacity: 1, 
-      x: 0,
+      y: 0,
       transition: {
         type: 'spring',
         damping: 25,
         stiffness: 100,
-        delay: 0.5,
+        delay: 1.3,
       },
     },
   };
@@ -89,11 +89,11 @@ const HeroSection = () => {
   const letters = ['V', 'O', 'C', 'T'];
 
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden pt-20 md:pt-16 bg-white">
+    <section className="relative min-h-screen lg:min-h-[85vh] flex items-center overflow-hidden pt-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
-        <div className="grid lg:grid-cols-2 gap-6 md:gap-4 items-center">
-          {/* Left Content */}
-          <div className="text-center lg:text-left" style={{ perspective: '1200px' }}>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:gap-8">
+          {/* Text Content - Always on top for mobile */}
+          <div className="text-center lg:text-left lg:flex-1 order-1" style={{ perspective: '1200px' }}>
             {/* VOCT Logo */}
             <motion.div
               variants={containerVariants}
@@ -106,7 +106,7 @@ const HeroSection = () => {
                 <motion.span
                   key={index}
                   variants={letterVariants}
-                  className="text-6xl sm:text-7xl md:text-[10rem] lg:text-[12rem] font-bold text-[#0A1F44] leading-none tracking-tight inline-block"
+                  className="text-5xl sm:text-6xl md:text-7xl lg:text-[10rem] xl:text-[12rem] font-bold text-[#0A1F44] leading-none tracking-tight inline-block"
                   style={{ 
                     fontFamily: 'Poppins, sans-serif',
                     transformStyle: 'preserve-3d',
@@ -124,11 +124,11 @@ const HeroSection = () => {
               variants={subtitleVariants}
               initial="hidden"
               animate="visible"
-              className="flex justify-center lg:justify-center lg:max-w-[580px]"
+              className="flex justify-center lg:justify-center lg:max-w-[580px] mt-2"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <span 
-                className="text-[#0A1F44]/70 font-semibold tracking-[0.1em] md:tracking-[0.15em] uppercase text-sm md:text-lg inline-block"
+                className="text-[#0A1F44]/70 font-semibold tracking-[0.08em] sm:tracking-[0.1em] md:tracking-[0.15em] uppercase text-xs sm:text-sm md:text-lg inline-block"
                 style={{ 
                   fontFamily: 'Poppins, sans-serif',
                   textShadow: '0 4px 12px rgba(10, 31, 68, 0.1)',
@@ -144,7 +144,7 @@ const HeroSection = () => {
               variants={sloganVariants}
               initial="hidden"
               animate="visible"
-              className="text-base sm:text-lg md:text-2xl font-semibold text-gray-900 mt-6 md:mt-8 text-center lg:text-center lg:max-w-[580px]"
+              className="text-sm sm:text-base md:text-lg lg:text-2xl font-semibold text-gray-900 mt-4 md:mt-6 lg:mt-8 text-center lg:text-center lg:max-w-[580px] px-2"
               style={{ fontFamily: 'Poppins, sans-serif' }}
               data-testid="hero-slogan"
             >
@@ -152,17 +152,17 @@ const HeroSection = () => {
             </motion.p>
           </div>
 
-          {/* Right Image */}
+          {/* Image - Below text on mobile, right side on desktop */}
           <motion.div
             variants={imageVariants}
             initial="hidden"
             animate="visible"
-            className="flex justify-center lg:justify-end order-first lg:order-last"
+            className="flex justify-center lg:justify-end lg:flex-1 order-2 mt-8 lg:mt-0"
           >
             <img
               src="/hero-physio.png"
               alt="Home physiotherapy"
-              className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl"
+              className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl"
               data-testid="hero-image"
             />
           </motion.div>
