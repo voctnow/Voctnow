@@ -810,6 +810,314 @@ async def submit_contact(message: ContactMessage):
     await db.contact_messages.insert_one(msg_doc)
     return {"success": True, "message": "Message received. We'll get back to you soon!"}
 
+# ==================== INTERNAL DASHBOARD MODELS ====================
+
+class InternalLogin(BaseModel):
+    email: str
+    password: str
+    role: str  # 'practitioner' or 'admin'
+
+class AdminUser(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    name: str
+    role: str  # 'founder', 'admin', 'operations', 'growth'
+    password_hash: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    is_active: bool = True
+
+# ==================== INTERNAL AUTH ENDPOINTS ====================
+
+@api_router.post("/internal/login")
+async def internal_login(credentials: InternalLogin):
+    """Login for practitioners and company members"""
+    if credentials.role == 'practitioner':
+        # Check practitioner by email
+        practitioner = await db.practitioners.find_one({
+            "personal_details.email": credentials.email,
+            "is_verified": True
+        })
+        if not practitioner:
+            raise HTTPException(status_code=401, detail="Invalid credentials or not verified")
+        
+        # For demo, use phone last 4 digits as password
+        expected_password = practitioner["personal_details"]["contact_number"][-4:]
+        if credentials.password != expected_password:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        return {
+            "success": True,
+            "user_type": "practitioner",
+            "user_id": practitioner["id"],
+            "name": practitioner["personal_details"]["full_name"],
+            "token": f"prac_{practitioner['id']}_{uuid.uuid4().hex[:8]}"
+        }
+    
+    elif credentials.role == 'admin':
+        # Check admin user
+        admin = await db.admin_users.find_one({"email": credentials.email, "is_active": True})
+        if not admin:
+            # Create default admin for demo
+            if credentials.email == "admin@voct.in" and credentials.password == "voct2026":
+                admin_user = {
+                    "id": str(uuid.uuid4()),
+                    "email": "admin@voct.in",
+                    "name": "VOCT Admin",
+                    "role": "founder",
+                    "password_hash": "voct2026",
+                    "created_at": datetime.utcnow(),
+                    "is_active": True
+                }
+                await db.admin_users.insert_one(admin_user)
+                admin = admin_user
+            else:
+                raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Verify password (for demo, plain text comparison)
+        if credentials.password != admin.get("password_hash", ""):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        return {
+            "success": True,
+            "user_type": "admin",
+            "user_id": admin["id"],
+            "name": admin["name"],
+            "role": admin["role"],
+            "token": f"admin_{admin['id']}_{uuid.uuid4().hex[:8]}"
+        }
+    
+    raise HTTPException(status_code=400, detail="Invalid role")
+
+# ==================== PRACTITIONER DASHBOARD ENDPOINTS ====================
+
+@api_router.get("/internal/practitioner/{practitioner_id}/dashboard")
+async def get_practitioner_dashboard(practitioner_id: str):
+    """Get practitioner dashboard data"""
+    practitioner = await db.practitioners.find_one({"id": practitioner_id})
+    if not practitioner:
+        raise HTTPException(status_code=404, detail="Practitioner not found")
+    
+    # Get today's bookings
+    today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    tomorrow = today + timedelta(days=1)
+    
+    todays_bookings = await db.bookings.find({
+        "assigned_physio_id": practitioner_id,
+        "preferred_date": today.strftime("%Y-%m-%d"),
+        "status": "confirmed"
+    }).to_list(20)
+    
+    # Get upcoming bookings (7 days)
+    upcoming_bookings = await db.bookings.find({
+        "assigned_physio_id": practitioner_id,
+        "status": "confirmed"
+    }).sort("preferred_date", 1).to_list(50)
+    
+    # Get stats
+    total_sessions = await db.bookings.count_documents({
+        "assigned_physio_id": practitioner_id,
+        "status": {"$in": ["confirmed", "completed"]}
+    })
+    
+    completed_sessions = await db.bookings.count_documents({
+        "assigned_physio_id": practitioner_id,
+        "status": "completed"
+    })
+    
+    # Calculate earnings (demo)
+    earnings_pipeline = [
+        {"$match": {"assigned_physio_id": practitioner_id, "payment_status": "paid"}},
+        {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
+    ]
+    earnings_result = await db.bookings.aggregate(earnings_pipeline).to_list(1)
+    total_earnings = earnings_result[0]["total"] if earnings_result else 0
+    
+    # Practitioner gets 70% of booking amount
+    practitioner_earnings = int(total_earnings * 0.7)
+    
+    return {
+        "practitioner": {
+            "id": practitioner["id"],
+            "name": practitioner["personal_details"]["full_name"],
+            "specialization": practitioner["education"].get("mpth_specialization", "General"),
+            "is_available": practitioner.get("is_available", True)
+        },
+        "todays_schedule": todays_bookings,
+        "upcoming_bookings": upcoming_bookings[:10],
+        "stats": {
+            "total_sessions": total_sessions,
+            "completed_sessions": completed_sessions,
+            "active_clients": len(set(b.get("user_id") for b in upcoming_bookings if b.get("user_id"))),
+            "total_earnings": practitioner_earnings,
+            "pending_payout": int(practitioner_earnings * 0.2)  # Demo: 20% pending
+        }
+    }
+
+@api_router.get("/internal/practitioner/{practitioner_id}/bookings")
+async def get_practitioner_bookings(practitioner_id: str, status: Optional[str] = None):
+    """Get practitioner's bookings"""
+    query = {"assigned_physio_id": practitioner_id}
+    if status:
+        query["status"] = status
+    
+    bookings = await db.bookings.find(query).sort("preferred_date", -1).to_list(100)
+    return {"bookings": bookings}
+
+@api_router.post("/internal/practitioner/{practitioner_id}/session/{booking_id}/complete")
+async def complete_session(practitioner_id: str, booking_id: str, notes: Optional[str] = None):
+    """Mark session as completed"""
+    booking = await db.bookings.find_one({"id": booking_id, "assigned_physio_id": practitioner_id})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    update_data = {
+        "status": "completed",
+        "completed_at": datetime.utcnow()
+    }
+    if notes:
+        update_data["session_notes"] = notes
+    
+    await db.bookings.update_one({"id": booking_id}, {"$set": update_data})
+    return {"success": True, "message": "Session marked as completed"}
+
+@api_router.put("/internal/practitioner/{practitioner_id}/availability")
+async def update_practitioner_availability(practitioner_id: str, is_available: bool):
+    """Update practitioner availability"""
+    await db.practitioners.update_one(
+        {"id": practitioner_id},
+        {"$set": {"is_available": is_available}}
+    )
+    return {"success": True, "is_available": is_available}
+
+# ==================== ADMIN DASHBOARD ENDPOINTS ====================
+
+@api_router.get("/internal/admin/dashboard")
+async def get_admin_dashboard():
+    """Get admin dashboard overview"""
+    # Total bookings
+    total_bookings = await db.bookings.count_documents({})
+    confirmed_bookings = await db.bookings.count_documents({"status": "confirmed"})
+    completed_bookings = await db.bookings.count_documents({"status": "completed"})
+    
+    # Revenue
+    revenue_pipeline = [
+        {"$match": {"payment_status": "paid"}},
+        {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
+    ]
+    revenue_result = await db.bookings.aggregate(revenue_pipeline).to_list(1)
+    total_revenue = revenue_result[0]["total"] if revenue_result else 0
+    
+    # Practitioners
+    total_practitioners = await db.practitioners.count_documents({})
+    verified_practitioners = await db.practitioners.count_documents({"is_verified": True})
+    pending_practitioners = await db.practitioners.count_documents({"status": "pending_review"})
+    
+    # Users/Clients
+    total_users = await db.users.count_documents({})
+    
+    # Recent bookings
+    recent_bookings = await db.bookings.find({}).sort("created_at", -1).to_list(10)
+    
+    # Cancellation rate
+    cancelled_bookings = await db.bookings.count_documents({"status": "cancelled"})
+    cancellation_rate = (cancelled_bookings / total_bookings * 100) if total_bookings > 0 else 0
+    
+    return {
+        "overview": {
+            "total_bookings": total_bookings,
+            "confirmed_bookings": confirmed_bookings,
+            "completed_bookings": completed_bookings,
+            "total_revenue": total_revenue,
+            "platform_commission": int(total_revenue * 0.3),  # 30% commission
+            "total_practitioners": total_practitioners,
+            "verified_practitioners": verified_practitioners,
+            "pending_practitioners": pending_practitioners,
+            "total_clients": total_users,
+            "cancellation_rate": round(cancellation_rate, 2)
+        },
+        "recent_bookings": recent_bookings,
+        "growth_indicators": {
+            "bookings_this_month": await db.bookings.count_documents({
+                "created_at": {"$gte": datetime.utcnow().replace(day=1, hour=0, minute=0, second=0)}
+            }),
+            "new_users_this_month": await db.users.count_documents({
+                "created_at": {"$gte": datetime.utcnow().replace(day=1, hour=0, minute=0, second=0)}
+            })
+        }
+    }
+
+@api_router.get("/internal/admin/practitioners")
+async def get_all_practitioners(status: Optional[str] = None):
+    """Get all practitioners for admin"""
+    query = {}
+    if status:
+        query["status"] = status
+    
+    practitioners = await db.practitioners.find(query).sort("created_at", -1).to_list(100)
+    return {"practitioners": practitioners}
+
+@api_router.put("/internal/admin/practitioner/{practitioner_id}/verify")
+async def verify_practitioner(practitioner_id: str, approve: bool):
+    """Approve or reject practitioner"""
+    update_data = {
+        "is_verified": approve,
+        "status": "approved" if approve else "rejected",
+        "verified_at": datetime.utcnow()
+    }
+    
+    await db.practitioners.update_one({"id": practitioner_id}, {"$set": update_data})
+    return {"success": True, "status": "approved" if approve else "rejected"}
+
+@api_router.get("/internal/admin/bookings")
+async def get_all_bookings(status: Optional[str] = None, limit: int = 50):
+    """Get all bookings for admin"""
+    query = {}
+    if status:
+        query["status"] = status
+    
+    bookings = await db.bookings.find(query).sort("created_at", -1).to_list(limit)
+    return {"bookings": bookings}
+
+@api_router.get("/internal/admin/analytics")
+async def get_admin_analytics():
+    """Get detailed analytics for admin"""
+    # Bookings by service type
+    service_pipeline = [
+        {"$group": {"_id": "$service_type", "count": {"$sum": 1}, "revenue": {"$sum": "$amount"}}}
+    ]
+    service_stats = await db.bookings.aggregate(service_pipeline).to_list(10)
+    
+    # Bookings by session count
+    session_pipeline = [
+        {"$group": {"_id": "$session_count", "count": {"$sum": 1}}}
+    ]
+    session_stats = await db.bookings.aggregate(session_pipeline).to_list(10)
+    
+    # Daily bookings for last 30 days
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    daily_pipeline = [
+        {"$match": {"created_at": {"$gte": thirty_days_ago}}},
+        {"$group": {
+            "_id": {"$dateToString": {"format": "%Y-%m-%d", "date": "$created_at"}},
+            "count": {"$sum": 1},
+            "revenue": {"$sum": "$amount"}
+        }},
+        {"$sort": {"_id": 1}}
+    ]
+    daily_stats = await db.bookings.aggregate(daily_pipeline).to_list(30)
+    
+    return {
+        "by_service": service_stats,
+        "by_session_count": session_stats,
+        "daily_trend": daily_stats
+    }
+
+@api_router.get("/internal/admin/users")
+async def get_all_users(limit: int = 50):
+    """Get all users/customers for admin"""
+    users = await db.users.find({}).sort("created_at", -1).to_list(limit)
+    return {"users": users}
+
 # Include the router
 app.include_router(api_router)
 
