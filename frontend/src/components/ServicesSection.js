@@ -190,12 +190,15 @@ const ServicesSection = () => {
           navigation
           pagination={{ clickable: true }}
           loop={true}
+          grabCursor={true}
+          speed={600}
+          effect="slide"
           breakpoints={{
             640: { slidesPerView: 1.5, centeredSlides: true },
             1024: { slidesPerView: 2.5, centeredSlides: true },
             1280: { slidesPerView: 3, centeredSlides: false },
           }}
-          className="pb-16"
+          className="pb-16 service-swiper"
         >
           {services.map((service, index) => (
             <SwiperSlide key={service.id}>
