@@ -30,11 +30,9 @@ const serviceColors = {
 
 const ServiceCard = ({ service, index, onBook }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [imageError, setImageError] = useState(false);
   
-  const imageUrl = imageError 
-    ? localServiceImages[service.id] || localServiceImages.orthopaedic
-    : serviceImages[service.id] || serviceImages.orthopaedic;
+  const imageUrl = serviceImages[service.id] || serviceImages.orthopaedic;
+  const colors = serviceColors[service.id] || serviceColors.orthopaedic;
 
   const handleCardInteraction = () => {
     setIsFlipped(!isFlipped);
@@ -68,17 +66,17 @@ const ServiceCard = ({ service, index, onBook }) => {
           }}
         >
           {/* Image Container */}
-          <div className="h-[280px] sm:h-[320px] overflow-hidden bg-gradient-to-b from-blue-50 to-white">
+          <div className={`h-[280px] sm:h-[320px] ${colors.bg} flex items-center justify-center p-8`}>
             <img 
               src={imageUrl}
               alt={service.name}
-              className="w-full h-full object-cover"
-              onError={() => setImageError(true)}
+              className="w-40 h-40 sm:w-48 sm:h-48 object-contain opacity-90"
+              style={{ filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.1))' }}
             />
           </div>
           
           {/* Service Name */}
-          <div className="p-4 text-center bg-gradient-to-b from-gray-50 to-white">
+          <div className="p-4 text-center bg-white">
             <h3 
               className="text-lg sm:text-xl font-semibold text-[#0A1F44]"
               style={{ fontFamily: 'Poppins, sans-serif' }}
@@ -90,11 +88,12 @@ const ServiceCard = ({ service, index, onBook }) => {
 
         {/* Back Side - Details */}
         <div 
-          className="absolute inset-0 rounded-2xl p-5 sm:p-6 bg-[#0A1F44] text-white flex flex-col overflow-hidden"
+          className="absolute inset-0 rounded-2xl p-5 sm:p-6 text-white flex flex-col overflow-hidden"
           style={{ 
             backfaceVisibility: 'hidden', 
             transform: 'rotateY(180deg)',
-            boxShadow: '0 10px 40px rgba(10, 31, 68, 0.3)',
+            backgroundColor: colors.accent,
+            boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
           }}
         >
           <div className="flex flex-col h-full">
